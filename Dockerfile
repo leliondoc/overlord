@@ -10,6 +10,8 @@ COPY app.py .
 RUN mkdir -p /data
 
 ENV DATABASE_PATH=/data/overlord.db
+ENV PORT=5000
 
-# Le port est injecté par Railway via $PORT
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "2", "--timeout", "120", "app:app"]
+EXPOSE 5000
+
+CMD gunicorn --bind 0.0.0.0:${PORT:-5000} --workers 1 --threads 2 --timeout 120 app:app
