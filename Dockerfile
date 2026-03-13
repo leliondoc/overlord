@@ -7,14 +7,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.py .
 
-RUN mkdir -p /data && \
-    useradd -r -s /bin/false appuser && \
-    chown -R appuser /data
+RUN mkdir -p /data
 
 ENV DATABASE_PATH=/data/overlord.db
 ENV PORT=5000
-
-USER appuser
 
 EXPOSE 5000
 
