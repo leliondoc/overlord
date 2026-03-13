@@ -7,8 +7,16 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.py .
 
-RUN mkdir -p /data
+RUN mkdir -p /data && \
+    useradd -r -s /bin/false appuser && \
+    chown -R appuser /data
 
 ENV DATABASE_PATH=/data/overlord.db
+ENV PORT=5000
 
-CMD gunicorn --bind 0.0.0.0:${PORT:-5000} --workers 2 --timeout 120 app:app
+USER appuser
+
+EXPOSE 5000
+
+# 1 worker + 4 threads : compatible SQLite (mono-writer)
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "4", "app:app"]
