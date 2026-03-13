@@ -5,14 +5,11 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# v1.2.0
 COPY app.py .
 
 RUN mkdir -p /data
 
 ENV DATABASE_PATH=/data/overlord.db
-ENV PORT=5000
 
-EXPOSE 5000
-
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "app:app"]
+# Le port est injecté par Railway via $PORT
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "1", "--threads", "2", "--timeout", "120", "app:app"]
